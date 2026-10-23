@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
-/* Layout: one column "établi" — guide pas à pas en haut, compteur de rangs collant, aide photo, lunettes. Gros caractères lisibles d'un coup d'œil, mains occupées. */
+/* Layout: one column "établi" — guide pas à pas en haut, compteur de rangs collant, aide photo. Gros caractères lisibles d'un coup d'œil, mains occupées. */
 :root{
   --bg:#F2F0F5; --surface:#FFFFFF; --ink:#211D2B; --muted:#625C70; --line:#DDD8E5;
   --accent:#1E6B66; --accent-ink:#FFFFFF; --accent-soft:#DCEDEA;
@@ -111,12 +111,6 @@ kbd{font:700 .78rem var(--body);border:1px solid var(--line);border-bottom-width
 .row-actions .btn{flex:1 1 160px}
 .muted{color:var(--muted);font-size:.92rem}
 
-/* Lunettes */
-.glasses{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.g{background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.g h3{font-size:1.1rem}
-.say{font-style:italic;background:var(--bg);border-radius:8px;padding:6px 10px}
-ul.clean{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
 @media (max-width:480px){.nav{grid-template-columns:1fr 1.6fr}.rows .num{font-size:2rem}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -185,7 +179,7 @@ ul.clean{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
 
   <section aria-labelledby="ask-t">
     <h2 id="ask-t">Montre ton tricot à Claude</h2>
-    <p class="lede">Une photo bien nette, de près, à la lumière du jour. Prends-la avec ton téléphone ou avec tes lunettes (« Hé Meta, prends une photo »), puis dépose-la ici. Claude regarde tes mailles et te dit ce qui se passe.</p>
+    <p class="lede">Une photo bien nette, de près, à la lumière du jour. Prends-la avec ton téléphone, puis dépose-la ici. Claude regarde tes mailles et te dit ce qui se passe.</p>
     <div class="ask" id="askBox">
       <label class="drop" id="drop" for="photo">
         <img id="preview" alt="Aperçu de ta photo" hidden>
@@ -204,36 +198,6 @@ ul.clean{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
     </div>
   </section>
 
-  <section aria-labelledby="gl-t">
-    <h2 id="gl-t">Avec tes lunettes Ray-Ban Meta</h2>
-    <div class="glasses">
-      <div class="g">
-        <span class="eyebrow">Les deux paires</span>
-        <h3>Photo « vue de tes yeux »</h3>
-        <p>Tes mains restent sur les aiguilles. Dis :</p>
-        <p class="say">« Hé Meta, prends une photo »</p>
-        <p class="muted">La photo arrive dans l'appli Meta AI sur ton téléphone. Envoie-la ensuite à Claude dans le bloc au-dessus pour un diagnostic détaillé.</p>
-      </div>
-      <div class="g">
-        <span class="eyebrow">Les deux paires</span>
-        <h3>Demander à Meta AI ce qu'elle voit</h3>
-        <ul class="clean">
-          <li><span class="say">« Hé Meta, regarde mon tricot : est-ce que je vois des V ou des bosses ? »</span></li>
-          <li><span class="say">« Hé Meta, compte les mailles sur mon aiguille. »</span></li>
-        </ul>
-        <p class="muted">Si Live AI est disponible dans ta langue et ton pays, la conversation peut rester ouverte pendant que tu tricotes. Le comptage par l'IA se trompe souvent : recompte toi-même.</p>
-      </div>
-      <div class="g">
-        <span class="eyebrow">Meta Ray-Ban Display</span>
-        <h3>Le petit écran dans le verre</h3>
-        <ul class="clean">
-          <li>Les réponses de Meta AI s'affichent aussi en texte : demande « explique-moi la maille endroit étape par étape » et fais défiler avec le bracelet Neural Band.</li>
-          <li>Appelle une amie qui tricote en appel vidéo : elle voit tes mains depuis tes lunettes.</li>
-        </ul>
-        <p class="muted">Cette page ne s'ouvre pas dans les lunettes : garde-la sur ton téléphone pour le compteur.</p>
-      </div>
-    </div>
-  </section>
 </div>
 
 <div class="wrap" style="padding-block:0;position:sticky;bottom:0;gap:0">
