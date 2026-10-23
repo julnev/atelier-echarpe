@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
 <style>
-/* Layout: one column "établi" — guide pas à pas en haut, compteur de rangs collant, aide photo. Gros caractères lisibles d'un coup d'œil, mains occupées. */
+/* Layout: one column "établi" — guide pas à pas en haut, aide photo. Gros caractères lisibles d'un coup d'œil, mains occupées. */
 :root{
   --bg:#F2F0F5; --surface:#FFFFFF; --ink:#211D2B; --muted:#625C70; --line:#DDD8E5;
   --accent:#1E6B66; --accent-ink:#FFFFFF; --accent-soft:#DCEDEA;
@@ -83,17 +83,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .kbd{font-size:.82rem;color:var(--muted)}
 kbd{font:700 .78rem var(--body);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--surface)}
 
-/* Compteur de rangs */
-.rows{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom, 0px));z-index:5;background:var(--ink);color:var(--bg);border-radius:18px;padding:14px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;box-shadow:0 10px 30px rgba(20,10,30,.25)}
-.rows .num{font:800 2.4rem/1 var(--display);font-variant-numeric:tabular-nums;min-width:2.2ch;text-align:center}
-.rows .num small{display:block;font:700 .66rem/1.2 var(--body);letter-spacing:.1em;text-transform:uppercase;opacity:.7}
-.rows .what{display:flex;flex-direction:column;gap:2px;min-width:0}
-.rows .what b{font:800 1.35rem/1.1 var(--display);color:var(--yarn)}
-.rows .what span{font-size:.85rem;opacity:.8}
-.rows .ctl{display:flex;gap:8px}
-.rows button{border:none;border-radius:12px;min-width:52px;min-height:52px;font-size:1.5rem;font-weight:800}
-.rows .minus{background:transparent;color:var(--bg);border:1.5px solid color-mix(in srgb,var(--bg) 35%,transparent)}
-.rows .plus{background:var(--yarn);color:#1D1606;min-width:72px}
 
 .settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .field{display:flex;flex-direction:column;gap:6px;font-size:.92rem;color:var(--muted)}
@@ -111,7 +100,7 @@ kbd{font:700 .78rem var(--body);border:1px solid var(--line);border-bottom-width
 .row-actions .btn{flex:1 1 160px}
 .muted{color:var(--muted);font-size:.92rem}
 
-@media (max-width:480px){.nav{grid-template-columns:1fr 1.6fr}.rows .num{font-size:2rem}}
+@media (max-width:480px){.nav{grid-template-columns:1fr 1.6fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -119,7 +108,7 @@ kbd{font:700 .78rem var(--body);border:1px solid var(--line);border-bottom-width
   <header>
     <span class="eyebrow">Première écharpe</span>
     <h1>Atelier Écharpe</h1>
-    <p class="lede">Une étape à la fois, en gros caractères. Pose ton téléphone ou ta tablette debout à côté de toi : <kbd>→</kbd> / <kbd>Espace</kbd> pour avancer, et le compteur en bas te dit quoi tricoter sur ce rang.</p>
+    <p class="lede">Une étape à la fois, en gros caractères. Pose ton téléphone ou ta tablette debout à côté de toi : <kbd>→</kbd> / <kbd>Espace</kbd> pour avancer, <kbd>←</kbd> pour revenir.</p>
   </header>
 
   <section aria-labelledby="guide-t">
@@ -170,9 +159,6 @@ kbd{font:700 .78rem var(--body);border:1px solid var(--line);border-bottom-width
       <label class="field" for="stitches">Mailles montées
         <input id="stitches" type="number" inputmode="numeric" min="2" max="200" value="20">
       </label>
-      <label class="field" for="target">Rangs visés (optionnel)
-        <input id="target" type="number" inputmode="numeric" min="0" max="2000" placeholder="ex. 300">
-      </label>
     </div>
     <p class="pattern-note" id="patternNote"></p>
   </section>
@@ -194,22 +180,12 @@ kbd{font:700 .78rem var(--body);border:1px solid var(--line);border-bottom-width
         <button class="btn ghost" id="stopBtn" hidden>Arrêter</button>
       </div>
       <div class="answer" id="answer"></div>
-      <p class="muted" id="askNote">Claude reçoit ta photo, ta question, l'étape où tu es et ton compteur de rangs.</p>
+      <p class="muted" id="askNote">Claude reçoit ta photo, ta question, l'étape où tu es et ton point.</p>
     </div>
   </section>
 
 </div>
 
-<div class="wrap" style="padding-block:0;position:sticky;bottom:0;gap:0">
-  <div class="rows" role="group" aria-label="Compteur de rangs">
-    <div class="num" aria-live="polite"><small>Rang</small><span id="rowNum">1</span></div>
-    <div class="what"><b id="rowWhat">Tout à l'endroit</b><span id="rowSub">20 mailles</span></div>
-    <div class="ctl">
-      <button class="minus" id="rowMinus" aria-label="Retirer un rang">−</button>
-      <button class="plus" id="rowPlus" aria-label="Rang terminé, ajouter un rang">+1</button>
-    </div>
-  </div>
-</div>
 
 <script>
 // v: [début, fin] en secondes dans la vidéo de PINK FLAMANT ROSE (Challenge tricot, vidéo 2)
@@ -226,7 +202,7 @@ const CHAPTERS = [
     {t:"Pique l'aiguille vers le haut, sous le brin du pouce qui est devant.", w:"Tu entres dans la boucle du pouce par en dessous.", v:[555,570]},
     {t:"Va chercher le brin de l'index par-dessus, et ramène-le à travers la boucle du pouce.", w:"L'aiguille fait un petit aller-retour : sous le pouce, par-dessus l'index, retour par le pouce.", v:[555,570], extra:{mnemo:["Sous le pouce, sur l'index, retour par le pouce.","À répéter à voix haute à chaque maille"]}},
     {t:"Lâche la boucle du pouce, remets le pouce en place et tends doucement.", w:"Une nouvelle maille est sur l'aiguille. Ne serre pas : la maille doit glisser librement.", v:[555,570], extra:{tip:"Mailles trop serrées ? Monte sur 2 aiguilles tenues ensemble, puis retire-en une. C'est l'astuce la plus utile du début.", warn:false}},
-    {t:"Répète jusqu'au nombre de mailles voulu, puis compte-les.", w:"Compte deux fois. Note le nombre dans « Mon écharpe » plus bas : le compteur te le rappellera à chaque rang.", v:[555,570]}
+    {t:"Répète jusqu'au nombre de mailles voulu, puis compte-les.", w:"Compte deux fois. Note le nombre dans « Mon écharpe » plus bas.", v:[555,570]}
   ]},
   {name:"Maille endroit", steps:[
     {t:"Passe l'aiguille pleine dans la main gauche. Le fil reste derrière le travail.", w:"La main droite tient l'aiguille vide. Tiens le fil comme tu veux : l'important c'est qu'il reste derrière.", v:[760,780]},
@@ -242,7 +218,7 @@ const CHAPTERS = [
     {t:"Repousse la boucle vers l'arrière à travers la maille, puis fais tomber l'ancienne.", w:"Même rythme que l'endroit, mais dans l'autre sens.", v:[935,962], extra:{mnemo:["Fil devant, je pique devant, j'enroule, je pousse derrière.","Pour l'envers"]}},
   ]},
   {name:"Finir un rang", steps:[
-    {t:"Quand l'aiguille gauche est vide, tourne ton ouvrage et change d'aiguille de main.", w:"L'aiguille pleine revient dans la main gauche. Appuie sur +1 sur le compteur en bas.", v:[876,895]},
+    {t:"Quand l'aiguille gauche est vide, tourne ton ouvrage et change d'aiguille de main.", w:"L'aiguille pleine revient dans la main gauche, et le fil pend sous l'aiguille.", v:[876,895]},
     {t:"Compte tes mailles à la fin de chaque rang, au moins les dix premiers.", w:"Si le nombre change, tu as ajouté ou perdu une maille. Plus tôt tu le vois, plus facile à réparer.", v:[650,676]},
     {t:"En jersey : regarde la face devant toi pour savoir quoi tricoter.", w:"Tu vois des petits V bien lisses ? Tricote à l'endroit. Tu vois des bosses ? Tricote à l'envers.", v:[993,1052], extra:{tip:"C'est plus fiable que de se souvenir du rang précédent."}}
   ]},
@@ -251,6 +227,15 @@ const CHAPTERS = [
     {t:"Un trou et une maille en plus au milieu ?", w:"Le fil est resté devant après une maille envers (ou derrière après une endroit) : ça fait un « jeté ». En côtes, ramène le fil entre les aiguilles à chaque changement."},
     {t:"Une maille s'est échappée ?", w:"Pas de panique. Pique-la tout de suite avec une épingle à nourrice ou un trombone pour qu'elle ne file pas, puis demande de l'aide à Claude avec une photo.", extra:{tip:"Un crochet permet de la remonter rang par rang, comme une échelle.", warn:true}},
     {t:"Ton écharpe s'enroule sur elle-même ?", w:"C'est normal en jersey, le tissu roule toujours. Le point mousse et les côtes restent bien à plat : c'est pour ça qu'on les conseille pour une écharpe.", v:[220,262]}
+  ]},
+  {name:"Retirer une maille", steps:[
+    {t:"Compte tes mailles : en as-tu vraiment une de plus qu'au montage ?", w:"Ne retire une maille que si tu en as une en trop. Fais-le au début d'un rang, juste après la première maille : le bord de l'écharpe reste droit."},
+    {t:"Tricote la première maille du rang normalement, à l'endroit.", w:"Fil derrière, comme d'habitude. Elle reste sur l'aiguille droite."},
+    {t:"Pique l'aiguille droite dans les 2 mailles suivantes en même temps.", w:"Comme pour une maille endroit : de l'avant vers l'arrière, de gauche à droite, mais à travers deux boucles à la fois.", extra:{tip:"Si c'est trop serré, pousse les deux mailles vers la pointe de l'aiguille gauche avant de piquer."}},
+    {t:"Enroule le fil et ramène la boucle à travers les deux mailles.", w:"Exactement le geste de la maille endroit, une seule fois pour les deux mailles.", extra:{mnemo:["2 mailles ensemble = 1 maille en moins.","Le nom officiel : « 2 m. ens. à l'endroit »"]}},
+    {t:"Fais tomber les deux mailles de l'aiguille gauche, puis finis le rang.", w:"Il ne reste qu'une maille à leur place. Recompte à la fin du rang : tu dois retrouver ton nombre de départ."},
+    {t:"L'erreur est juste avant ? Tu peux aussi défaire maille par maille.", w:"Pique l'aiguille gauche dans la maille du rang du dessous, juste sous la dernière maille de l'aiguille droite.", extra:{tip:"On appelle ça « détricoter ». C'est le meilleur moyen de retirer une maille ajoutée par erreur quelques mailles plus tôt."}},
+    {t:"Fais glisser la maille de l'aiguille droite et tire doucement le fil.", w:"La maille du dessous revient sur l'aiguille gauche. Répète jusqu'à l'erreur, puis recommence à tricoter normalement."}
   ]},
   {name:"Rabattre", steps:[
     {t:"Tricote 2 mailles normalement.", w:"Elles sont toutes les deux sur l'aiguille droite.", v:[1072,1110]},
@@ -267,10 +252,8 @@ const store = {
   set(k,v){try{localStorage.setItem("tricot:"+k,JSON.stringify(v))}catch{}}
 };
 let idx = Math.min(store.get("idx",0), flat.length-1);
-let row = store.get("row",1);
 let pattern = store.get("pattern","mousse");
 let stitches = store.get("stitches",20);
-let target = store.get("target","");
 
 function renderChapters(){
   const cur = flat[idx].ci;
@@ -362,36 +345,16 @@ const NOTES={
   jersey:"Jersey : rangs impairs à l'endroit, rangs pairs à l'envers. Joli côté V, mais les bords s'enroulent : attends-toi à une écharpe en tube.",
   cotes:"Côtes 1/1 : alterne 1 maille endroit, 1 maille envers. Règle simple : tricote les mailles comme elles se présentent (V → endroit, bosse → envers). Ne roule pas, mais plus exigeant."
 };
-function rowInstruction(){
-  if(pattern==="mousse") return ["Tout à l'endroit","Fil derrière, du début à la fin"];
-  if(pattern==="jersey") return row%2 ? ["Tout à l'endroit","Fil derrière · tu dois voir des bosses face à toi"] : ["Tout à l'envers","Fil devant · tu dois voir des V face à toi"];
-  const odd = stitches%2===1;
-  if(odd) return row%2 ? ["1 end, 1 env… finir par 1 end","Nombre impair : commence toujours par 1 endroit"] : ["1 env, 1 end… finir par 1 env","Rang pair : commence par 1 envers"];
-  return ["1 end, 1 env… jusqu'au bout","Même chose à chaque rang (nombre pair) · V → endroit, bosse → envers"];
-}
-function renderRows(){
-  $("rowNum").textContent=row;
-  const [what,sub]=rowInstruction();
-  $("rowWhat").textContent=what;
-  const t = Number(target)>0 ? ` · ${Math.max(0,target-row+1)} rangs restants` : "";
-  $("rowSub").textContent=`${stitches} mailles · ${sub}${t}`;
-  $("patternNote").textContent=NOTES[pattern];
-  store.set("row",row);
-}
-$("pattern").value=pattern; $("stitches").value=stitches; $("target").value=target;
-$("pattern").onchange=e=>{pattern=e.target.value;store.set("pattern",pattern);renderRows()};
-$("stitches").oninput=e=>{stitches=Math.max(1,parseInt(e.target.value)||0);store.set("stitches",stitches);renderRows()};
-$("target").oninput=e=>{target=e.target.value;store.set("target",target);renderRows()};
-$("rowPlus").onclick=()=>{row++;renderRows();if(navigator.vibrate)try{navigator.vibrate(30)}catch{}};
-$("rowMinus").onclick=()=>{if(row>1){row--;renderRows()}};
+function renderPattern(){ $("patternNote").textContent=NOTES[pattern]; }
+$("pattern").value=pattern; $("stitches").value=stitches;
+$("pattern").onchange=e=>{pattern=e.target.value;store.set("pattern",pattern);renderPattern()};
+$("stitches").oninput=e=>{stitches=Math.max(1,parseInt(e.target.value)||0);store.set("stitches",stitches)};
 
 document.addEventListener("keydown",e=>{
   if(e.target.matches("input,textarea,select")) return;
   if(["ArrowRight","PageDown"," ","Enter"].includes(e.key) && !e.target.matches("button")){e.preventDefault();$("next").click()}
   else if(["ArrowRight","PageDown"].includes(e.key)){e.preventDefault();$("next").click()}
   else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();$("prev").click()}
-  else if(e.key==="+"||e.key==="="){$("rowPlus").click()}
-  else if(e.key==="-"){$("rowMinus").click()}
 });
 
 // Garder l'écran allumé pendant qu'on tricote
@@ -440,9 +403,8 @@ $("askBtn").onclick=async()=>{
   if(!sample) return;
   const q=$("question").value.trim()||"Est-ce que mes mailles sont correctes ?";
   const s=flat[idx];
-  const [what]=rowInstruction();
   const prompt=`Tu es une prof de tricot bienveillante et très concrète. Ton élève est débutante et tricote sa première écharpe.
-Contexte : point choisi = ${pattern}; ${stitches} mailles montées; elle en est au rang ${row} (consigne du rang : ${what}). Étape du guide ouverte : « ${CHAPTERS[s.ci].name} — ${s.t} ».
+Contexte : point choisi = ${pattern}; ${stitches} mailles montées. Étape du guide ouverte : « ${CHAPTERS[s.ci].name} — ${s.t} ».
 ${photo&&canImages?"Elle t'envoie une photo de son tricot. Décris d'abord en une phrase ce que tu vois (côté V ou bosses, aiguilles, fil), puis repère les erreurs éventuelles (maille en trop, jeté/trou, maille tordue, maille échappée, tension irrégulière).":"Elle n'a pas envoyé de photo."}
 Sa question : ${q}
 
@@ -460,5 +422,5 @@ Réponds en français, tutoiement, phrases courtes. Si quelque chose est à corr
 };
 $("stopBtn").onclick=()=>ctl?.abort();
 
-render(); renderRows();
+render(); renderPattern();
 </script>
